@@ -4,18 +4,21 @@ using System;
 using System.Web;
 using Newtonsoft.Json;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Cors;
+using System.Collections.Generic;
 
 namespace MeetingPlanner.Controllers
 {
     [Produces("application/json")]
     [ApiController]
+    [EnableCors("AllowAllOrigins")]
     public class HomeController : ControllerBase
     {
         DataBase dataBase = new DataBase();
 
         [HttpPost]
         [Route("/reg")]
-        public string registration([FromBody] User user)
+        public string Registration([FromBody] User user)
         {
             try
             {
@@ -30,7 +33,7 @@ namespace MeetingPlanner.Controllers
 
         [HttpPost]
         [Route("/auth")]
-        public string authorization([Microsoft.AspNetCore.Mvc.FromBody] User user)
+        public string Authorization([Microsoft.AspNetCore.Mvc.FromBody] User user)
         {
             try
             {
@@ -39,6 +42,8 @@ namespace MeetingPlanner.Controllers
                 {
                     Organization organization = dataBase.getOrganizationByHead(user.id);
                     organization.head = user;
+                    List<Course> courses = dataBase.getCourcesByOrganizationId(organization.id);
+                    organization.courses = courses;
                     return JsonConvert.SerializeObject(organization);
                 }
                 return JsonConvert.SerializeObject(user);
@@ -51,14 +56,44 @@ namespace MeetingPlanner.Controllers
 
         [HttpPost]
         [Route("/organizationreg")]
-        public string organizationreg([Microsoft.AspNetCore.Mvc.FromBody] User user)
+        public string Organizationreg([Microsoft.AspNetCore.Mvc.FromQuery] User user,
+                                      [Microsoft.AspNetCore.Mvc.FromQuery] Organization organization)
         {
             try
             {
                 long userId = dataBase.UserRegistration(user);
-                Organization organization = new Organization();
                 organization.personId = userId;
                 dataBase.OrganizationRegistration(organization);
+                return "true";
+            }
+            catch (Exception e)
+            {
+                return "false";
+            }
+        }
+
+        [HttpPost]
+        [Route("/addcourse")]
+        public string AddCourse([Microsoft.AspNetCore.Mvc.FromBody] Course course)
+        {
+            try
+            {
+                dataBase.AddCource(course);
+                return "true";
+            }
+            catch (Exception e)
+            {
+                return "false";
+            }
+        }
+
+        [HttpPost]
+        [Route("/deletecourse")]
+        public string DeleteCourse([Microsoft.AspNetCore.Mvc.FromQuery] long courseId)
+        {
+            try
+            {
+                dataBase.DeleteCource(courseId);
                 return "true";
             }
             catch (Exception e)

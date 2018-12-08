@@ -14,7 +14,7 @@ namespace Schedule.Models
         public long personId { get; set; }
         public User head { get; set; }
         public List<OrganizationSchedule> events { get; set; }
-
+        public List<Course> courses { get; set; }
         public Organization()
         {
      }

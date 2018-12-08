@@ -35,6 +35,20 @@ namespace MeetingPlanner.Models.DBentities
             return user;
         }
 
+        public List<Course> getCourcesByOrganizationId(long id)
+        {
+            MySqlCommand mySqlCommand = mySqlConnection.CreateCommand();
+            mySqlCommand.CommandText = "SELECT id, name, description FROM cource WHERE organizationId = " + id + ";";
+            MySqlDataReader reader = mySqlCommand.ExecuteReader();
+            List<Course> courses = new List<Course>();
+            while (reader.Read())
+            {
+                courses.Add(new Course(Int32.Parse(reader["id"].ToString()), reader["name"].ToString(), reader["description"].ToString()));
+            }
+            reader.Close();
+            return courses;
+        }
+
         public void OrganizationRegistration(Organization organization)
         {
             MySqlCommand mySqlCommand = mySqlConnection.CreateCommand();
@@ -42,15 +56,31 @@ namespace MeetingPlanner.Models.DBentities
             mySqlCommand.ExecuteNonQuery();
         }
 
+        public void AddCource(Course course)
+        {
+            MySqlCommand mySqlCommand = mySqlConnection.CreateCommand();
+            mySqlCommand.CommandText = "INSERT INTO course(name,description) VALUES('" + course.name + "','" + course.description + "');";
+            mySqlCommand.ExecuteNonQuery();
+        }
+
+        public void DeleteCource(long courseId)
+        {
+            MySqlCommand mySqlCommand = mySqlConnection.CreateCommand();
+            mySqlCommand.CommandText = "DELETE FROM course WHERE id=" + courseId + ";";
+            mySqlCommand.ExecuteNonQuery();
+        }
+
         public Organization getOrganizationByHead(long headId)
         {
             MySqlCommand mySqlCommand = mySqlConnection.CreateCommand();
-            mySqlCommand.CommandText = "SELECT id,name, description, specialization FROM organization WHERE head = " + headId + ";";
+            mySqlCommand.CommandText = "SELECT id,name, description, specialization FROM organization WHERE personId = " + headId + ";";
             MySqlDataReader reader = mySqlCommand.ExecuteReader();
             reader.Read();
             Organization organization = new Organization(Int32.Parse(reader["id"].ToString()),reader["name"].ToString(), reader["description"].ToString(), reader["specialization"].ToString());
             reader.Close();
             return organization;
         }
+
+        
     }
 }
