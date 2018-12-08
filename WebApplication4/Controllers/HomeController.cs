@@ -89,11 +89,11 @@ namespace MeetingPlanner.Controllers
 
         [HttpPost]
         [Route("/deletecourse")]
-        public string DeleteCourse([Microsoft.AspNetCore.Mvc.FromQuery] long courseId)
+        public string DeleteCourse([Microsoft.AspNetCore.Mvc.FromBody] Course course)
         {
             try
             {
-                dataBase.DeleteCource(courseId);
+                dataBase.DeleteCource(course.id);
                 return "true";
             }
             catch (Exception e)

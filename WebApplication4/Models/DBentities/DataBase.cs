@@ -15,7 +15,6 @@ namespace MeetingPlanner.Models.DBentities
         public long UserRegistration(User user)
         {
             mySqlConnection.Open();
-
             MySqlCommand mySqlCommand = mySqlConnection.CreateCommand();
             mySqlCommand.CommandText = "INSERT INTO person(login, password, email, role) VALUES('" + user.login + "','" + user.password + "','" + user.email + "','" + user.role + "');";
             mySqlCommand.ExecuteNonQuery();
@@ -58,13 +57,15 @@ namespace MeetingPlanner.Models.DBentities
 
         public void AddCource(Course course)
         {
+            mySqlConnection.Open();
             MySqlCommand mySqlCommand = mySqlConnection.CreateCommand();
-            mySqlCommand.CommandText = "INSERT INTO course(name,description) VALUES('" + course.name + "','" + course.description + "');";
+            mySqlCommand.CommandText = "INSERT INTO course(name,description,organizationId) VALUES('" + course.name + "','" + course.description + "','" + course.organizationId + "');";
             mySqlCommand.ExecuteNonQuery();
         }
 
         public void DeleteCource(long courseId)
         {
+            mySqlConnection.Open();
             MySqlCommand mySqlCommand = mySqlConnection.CreateCommand();
             mySqlCommand.CommandText = "DELETE FROM course WHERE id=" + courseId + ";";
             mySqlCommand.ExecuteNonQuery();
