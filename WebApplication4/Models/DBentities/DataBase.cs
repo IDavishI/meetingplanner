@@ -166,6 +166,22 @@ namespace WebApplication4.Models.DBentities
             return mySqlCommand.LastInsertedId;
         }
 
+        internal void UpdateInstructor(Instructor instructor)
+        {
+            mySqlConnection.Open();
+            MySqlCommand mySqlCommand = mySqlConnection.CreateCommand();
+            mySqlCommand.CommandText = "UPDATE instructor SET firstName = " + instructor.firstName + ", secondName = " + instructor.secondName + ", specialization = " + instructor.specialization + " WHERE id=" + instructor.id + ";";
+            mySqlCommand.ExecuteNonQuery();
+        }
+
+        internal void DeleteInstructor(long id)
+        {
+            mySqlConnection.Open();
+            MySqlCommand mySqlCommand = mySqlConnection.CreateCommand();
+            mySqlCommand.CommandText = "DELETE FROM instructor WHERE id=" + id + ";";
+            mySqlCommand.ExecuteNonQuery();
+        }
+
         internal List<User> searchPersons(string pattern)
         {
             MySqlCommand mySqlCommand = mySqlConnection.CreateCommand();

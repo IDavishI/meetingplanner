@@ -256,6 +256,38 @@ namespace Schedule.Controllers
             }
         }
 
+
+        [HttpPost]
+        [Route("/updateinstuctor")]
+        public string UpdateInstructor([Microsoft.AspNetCore.Mvc.FromBody] Instructor instructor)
+        {
+            try
+            {
+                dataBase.UpdateInstructor(instructor);
+                return "true";
+            }
+            catch (Exception e)
+            {
+                return "false";
+            }
+        }
+
+        [HttpPost]
+        [Route("/deleteinstructor")]
+        public string DeleteInstructor([Microsoft.AspNetCore.Mvc.FromBody] Instructor instructor)
+        {
+            try
+            {
+                dataBase.DeleteInstructor(instructor.id);
+                return "true";
+            }
+            catch (Exception e)
+            {
+                return "false";
+            }
+        }
+
+
         [HttpPost]
         [Route("/searchperson")]
         public string SearchPersons([Microsoft.AspNetCore.Mvc.FromBody] string pattern)
