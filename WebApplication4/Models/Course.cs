@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Schedule.Models
+namespace WebApplication4.Models
 {
     public class Course
     {
@@ -12,6 +12,7 @@ namespace Schedule.Models
         public string description { get; set; }
         public long organizationId { get; set; }
         public List<Schedule> events { get; set; }
+        public List<Group> groups { get; set; }
 
         public Course()
         {

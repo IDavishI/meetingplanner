@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Schedule.Models
+namespace WebApplication4.Models
 {
     public class Organization
     {
@@ -13,7 +13,6 @@ namespace Schedule.Models
         public string specialization { get; set; }
         public long personId { get; set; }
         public User head { get; set; }
-        public List<OrganizationSchedule> events { get; set; }
         public List<Course> courses { get; set; }
         public Organization()
         {

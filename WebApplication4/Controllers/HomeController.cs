@@ -1,5 +1,5 @@
-﻿using MeetingPlanner.Models.DBentities;
-using Schedule.Models;
+﻿using WebApplication4.Models.DBentities;
+using WebApplication4.Models;
 using System;
 using System.Web;
 using Newtonsoft.Json;
@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Cors;
 using System.Collections.Generic;
 
-namespace MeetingPlanner.Controllers
+namespace Schedule.Controllers
 {
     [Produces("application/json")]
     [ApiController]
@@ -56,13 +56,13 @@ namespace MeetingPlanner.Controllers
 
         [HttpPost]
         [Route("/organizationreg")]
-        public string Organizationreg([Microsoft.AspNetCore.Mvc.FromQuery] User user,
-                                      [Microsoft.AspNetCore.Mvc.FromQuery] Organization organization)
+        public string Organizationreg([Microsoft.AspNetCore.Mvc.FromBody] Organization organization)
         {
             try
             {
+                User user = organization.head;
                 long userId = dataBase.UserRegistration(user);
-                organization.personId = userId;
+                organization.head.id = userId;
                 dataBase.OrganizationRegistration(organization);
                 return "true";
             }
@@ -78,7 +78,23 @@ namespace MeetingPlanner.Controllers
         {
             try
             {
-                dataBase.AddCource(course);
+                long id  = dataBase.AddCource(course);
+                course.id = id;
+                return JsonConvert.SerializeObject(course);
+            }
+            catch (Exception e)
+            {
+                return "false";
+            }
+        }
+
+        [HttpPost]
+        [Route("/updatecourse")]
+        public string UpdateCourse([Microsoft.AspNetCore.Mvc.FromBody] Course course)
+        {
+            try
+            {
+                dataBase.UpdateCourse(course);
                 return "true";
             }
             catch (Exception e)
@@ -93,8 +109,101 @@ namespace MeetingPlanner.Controllers
         {
             try
             {
-                dataBase.DeleteCource(course.id);
+                dataBase.DeleteCourse(course.id);
                 return "true";
+            }
+            catch (Exception e)
+            {
+                return "false";
+            }
+        }
+
+        [HttpPost]
+        [Route("/getgroups")]
+        public string GetGroups([Microsoft.AspNetCore.Mvc.FromBody] Course course)
+        {
+            try
+            {
+                List<Group> groups = dataBase.getGroupsByCourseId(course.id);
+                return JsonConvert.SerializeObject(groups);
+            }
+            catch (Exception e)
+            {
+                return "false";
+            }
+        }
+
+        [HttpPost]
+        [Route("/creategroup")]
+        public string CreateGroup([Microsoft.AspNetCore.Mvc.FromBody] Group group)
+        {
+            try
+            {
+                long id = dataBase.CreateGroup(group);
+                group.id = id;
+                return JsonConvert.SerializeObject(group);
+            }
+            catch (Exception e)
+            {
+                return "false";
+            }
+        }
+
+        [HttpPost]
+        [Route("/updategroup")]
+        public string UpdateGroup([Microsoft.AspNetCore.Mvc.FromBody] Group group)
+        {
+            try
+            {
+                dataBase.UpdateGroup(group);
+                return "true";
+            }
+            catch (Exception e)
+            {
+                return "false";
+            }
+        }
+
+        [HttpPost]
+        [Route("/deletegroup")]
+        public string DeleteGroup([Microsoft.AspNetCore.Mvc.FromBody] Group group)
+        {
+            try
+            {
+                dataBase.DeleteGroup(group.id);
+                return "true";
+            }
+            catch (Exception e)
+            {
+                return "false";
+            }
+        }
+
+        [HttpPost]
+        [Route("/addroom")]
+        public string AddRoom([Microsoft.AspNetCore.Mvc.FromBody] Room room)
+        {
+            try
+            {
+                long id = dataBase.AddRoom(room);
+                room.id = id;
+                return JsonConvert.SerializeObject(room);
+            }
+            catch (Exception e)
+            {
+                return "false";
+            }
+        }
+
+        [HttpPost]
+        [Route("/createschedule")]
+        public string CreateSchedule([Microsoft.AspNetCore.Mvc.FromBody] WebApplication4.Models.Schedule schedule)
+        {
+            try
+            {
+                long id = dataBase.CreateSchedule(schedule);
+                schedule.id = id;
+                return JsonConvert.SerializeObject(schedule);
             }
             catch (Exception e)
             {
