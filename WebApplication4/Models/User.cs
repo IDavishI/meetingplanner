@@ -16,6 +16,12 @@ namespace WebApplication4.Models
         
         public User() {}
 
+        public User(long id, string login)
+        {
+            this.id = id;
+            this.login = login;
+        }
+
         public User(long id, string login, string password, string email, string role)
         {
             this.id = id;

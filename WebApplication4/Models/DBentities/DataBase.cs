@@ -120,9 +120,72 @@ namespace WebApplication4.Models.DBentities
             mySqlCommand.ExecuteNonQuery();
         }
 
+        internal List<Room> getRoomsByCourseId(long id)
+        {
+            MySqlCommand mySqlCommand = mySqlConnection.CreateCommand();
+            mySqlCommand.CommandText = "SELECT id, number, floor FROM rooms WHERE courseId = " + id + ";";
+            MySqlDataReader reader = mySqlCommand.ExecuteReader();
+            List<Room> rooms = new List<Room>();
+            while (reader.Read())
+            {
+                rooms.Add(new Room(Int32.Parse(reader["id"].ToString()), reader["number"].ToString(), Int32.Parse(reader["floor"].ToString())));
+            }
+            reader.Close();
+            return rooms;
+        }
+
         internal long AddRoom(Room room)
         {
-            throw new NotImplementedException();
+            mySqlConnection.Open();
+            MySqlCommand mySqlCommand = mySqlConnection.CreateCommand();
+            mySqlCommand.CommandText = "INSERT INTO room(number,floor,courseId) VALUES('" + room.number + "'," + room.floor + "," + room.courseId +");";
+            mySqlCommand.ExecuteNonQuery();
+            return mySqlCommand.LastInsertedId;
+        }
+
+        internal List<Instructor> getInstructorsCourseId(long id)
+        {
+            MySqlCommand mySqlCommand = mySqlConnection.CreateCommand();
+            mySqlCommand.CommandText = "SELECT id, firstName, secondName, specialization FROM person WHERE courseId =" + id + ";";
+            MySqlDataReader reader = mySqlCommand.ExecuteReader();
+            List<Instructor> instructors = new List<Instructor>();
+            while (reader.Read())
+            {
+                instructors.Add(new Instructor(Int32.Parse(reader["id"].ToString()), reader["firstName"].ToString(), reader["secondName"].ToString(), reader["specialization"].ToString()));
+            }
+            reader.Close();
+            return instructors;
+        }
+
+        internal long AddInstructor(Instructor instructor)
+        {
+            mySqlConnection.Open();
+            MySqlCommand mySqlCommand = mySqlConnection.CreateCommand();
+            mySqlCommand.CommandText = "INSERT INTO instructor(firstName,secondName,specialization, coursesId) VALUES('" + instructor.firstName + "','" + instructor.secondName + "','" + instructor.specialization + "'," + instructor.courseId + ");";
+            mySqlCommand.ExecuteNonQuery();
+            return mySqlCommand.LastInsertedId;
+        }
+
+        internal List<User> searchPersons(string pattern)
+        {
+            MySqlCommand mySqlCommand = mySqlConnection.CreateCommand();
+            mySqlCommand.CommandText = "SELECT id, login FROM person WHERE login LIKE '%" + pattern + "%';";
+            MySqlDataReader reader = mySqlCommand.ExecuteReader();
+            List<User> users = new List<User>();
+            while (reader.Read())
+            {
+                users.Add(new User(Int32.Parse(reader["id"].ToString()), reader["login"].ToString()));
+            }
+            reader.Close();
+            return users;
+        }
+
+        internal void DeleteRoom(long id)
+        {
+            mySqlConnection.Open();
+            MySqlCommand mySqlCommand = mySqlConnection.CreateCommand();
+            mySqlCommand.CommandText = "DELETE FROM room WHERE id=" + id + ";";
+            mySqlCommand.ExecuteNonQuery();
         }
 
         public long CreateSchedule(Schedule schedule)

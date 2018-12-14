@@ -180,6 +180,21 @@ namespace Schedule.Controllers
         }
 
         [HttpPost]
+        [Route("/getrooms")]
+        public string GetRooms([Microsoft.AspNetCore.Mvc.FromBody] Course course)
+        {
+            try
+            {
+                List<Room> rooms = dataBase.getRoomsByCourseId(course.id);
+                return JsonConvert.SerializeObject(rooms);
+            }
+            catch (Exception e)
+            {
+                return "false";
+            }
+        }
+
+        [HttpPost]
         [Route("/addroom")]
         public string AddRoom([Microsoft.AspNetCore.Mvc.FromBody] Room room)
         {
@@ -194,6 +209,69 @@ namespace Schedule.Controllers
                 return "false";
             }
         }
+
+        [HttpPost]
+        [Route("/deleteroom")]
+        public string DeleteRoom([Microsoft.AspNetCore.Mvc.FromBody] Room room)
+        {
+            try
+            {
+                dataBase.DeleteRoom(room.id);
+                return "true";
+            }
+            catch (Exception e)
+            {
+                return "false";
+            }
+        }
+
+        [HttpPost]
+        [Route("/getinstructors")]
+        public string GetInstructors([Microsoft.AspNetCore.Mvc.FromBody] Course course)
+        {
+            try
+            {
+                List<Instructor> instructors = dataBase.getInstructorsCourseId(course.id);
+                return JsonConvert.SerializeObject(instructors);
+            }
+            catch (Exception e)
+            {
+                return "false";
+            }
+        }
+
+        [HttpPost]
+        [Route("/addinstructors")]
+        public string AddInstructors([Microsoft.AspNetCore.Mvc.FromBody] Instructor instructor)
+        {
+            try
+            {
+                long id = dataBase.AddInstructor(instructor);
+                instructor.id = id;
+                return JsonConvert.SerializeObject(instructor);
+            }
+            catch (Exception e)
+            {
+                return "false";
+            }
+        }
+
+        [HttpPost]
+        [Route("/searchperson")]
+        public string SearchPersons([Microsoft.AspNetCore.Mvc.FromBody] string pattern)
+        {
+            try
+            {
+                List<User> users = dataBase.searchPersons(pattern);
+                return JsonConvert.SerializeObject(users);
+            }
+            catch (Exception e)
+            {
+                return "false";
+            }
+        }
+
+        
 
         [HttpPost]
         [Route("/createschedule")]
