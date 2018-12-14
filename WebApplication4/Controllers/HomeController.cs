@@ -320,5 +320,36 @@ namespace Schedule.Controllers
                 return "false";
             }
         }
+
+        [HttpPost]
+        [Route("/updateschedule")]
+        public string UpdateSchedule([Microsoft.AspNetCore.Mvc.FromBody] WebApplication4.Models.Schedule schedule)
+        {
+            try
+            {
+                dataBase.UpdateSchedule(schedule);
+                return "true";
+            }
+            catch (Exception e)
+            {
+                return "false";
+            }
+        }
+
+        [HttpPost]
+        [Route("/deleteschedule")]
+        public string DeleteSchedule([Microsoft.AspNetCore.Mvc.FromBody] WebApplication4.Models.Schedule schedule)
+        {
+            try
+            {
+                dataBase.DeleteSchedule(schedule.id);
+                return "true";
+            }
+            catch (Exception e)
+            {
+                return "false";
+            }
+        }
+
     }
 }

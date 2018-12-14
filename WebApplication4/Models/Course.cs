@@ -13,6 +13,7 @@ namespace WebApplication4.Models
         public long organizationId { get; set; }
         public List<Schedule> events { get; set; }
         public List<Group> groups { get; set; }
+        public List<Instructor> instructors { get; set; }
 
         public Course()
         {

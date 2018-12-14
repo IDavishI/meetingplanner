@@ -67,7 +67,7 @@ namespace WebApplication4.Models.DBentities
         {
             mySqlConnection.Open();
             MySqlCommand mySqlCommand = mySqlConnection.CreateCommand();
-            mySqlCommand.CommandText = "UPDATE course SET name = " + course.name + ", description = " + course.description + " WHERE id=" + course.id + ";";
+            mySqlCommand.CommandText = "UPDATE course SET name = '" + course.name + "', description = '" + course.description + "' WHERE id=" + course.id + ";";
             mySqlCommand.ExecuteNonQuery();
         }
 
@@ -106,7 +106,7 @@ namespace WebApplication4.Models.DBentities
         {
             mySqlConnection.Open();
             MySqlCommand mySqlCommand = mySqlConnection.CreateCommand();
-            mySqlCommand.CommandText = "UPDATE group SET name = " + group.name + " WHERE id=" + group.id + ";";
+            mySqlCommand.CommandText = "UPDATE group SET name = '" + group.name + "' WHERE id=" + group.id + ";";
             mySqlCommand.ExecuteNonQuery();
         }
 
@@ -161,7 +161,7 @@ namespace WebApplication4.Models.DBentities
         {
             mySqlConnection.Open();
             MySqlCommand mySqlCommand = mySqlConnection.CreateCommand();
-            mySqlCommand.CommandText = "INSERT INTO instructor(firstName,secondName,specialization, coursesId) VALUES('" + instructor.firstName + "','" + instructor.secondName + "','" + instructor.specialization + "'," + instructor.courseId + ");";
+            mySqlCommand.CommandText = "INSERT INTO instructor(firstName,secondName,specialization, courseId) VALUES('" + instructor.firstName + "','" + instructor.secondName + "','" + instructor.specialization + "'," + instructor.courseId + ");";
             mySqlCommand.ExecuteNonQuery();
             return mySqlCommand.LastInsertedId;
         }
@@ -170,7 +170,7 @@ namespace WebApplication4.Models.DBentities
         {
             mySqlConnection.Open();
             MySqlCommand mySqlCommand = mySqlConnection.CreateCommand();
-            mySqlCommand.CommandText = "UPDATE instructor SET firstName = " + instructor.firstName + ", secondName = " + instructor.secondName + ", specialization = " + instructor.specialization + " WHERE id=" + instructor.id + ";";
+            mySqlCommand.CommandText = "UPDATE instructor SET firstName = '" + instructor.firstName + "', secondName = '" + instructor.secondName + "', specialization = '" + instructor.specialization + "' WHERE id=" + instructor.id + ";";
             mySqlCommand.ExecuteNonQuery();
         }
 
@@ -194,6 +194,22 @@ namespace WebApplication4.Models.DBentities
             }
             reader.Close();
             return users;
+        }
+
+        internal void UpdateSchedule(Schedule schedule)
+        {
+            mySqlConnection.Open();
+            MySqlCommand mySqlCommand = mySqlConnection.CreateCommand();
+            mySqlCommand.CommandText = "UPDATE schedule SET time = '" + schedule.time + "', courceId = " + schedule.courseId + ", roomId = " + schedule.roomId + ", instructorId = " + schedule.instructorId + ", groupId = " + schedule.groupId + " WHERE id=" + schedule.id + ";";
+            mySqlCommand.ExecuteNonQuery();
+        }
+
+        internal void DeleteSchedule(long id)
+        {
+            mySqlConnection.Open();
+            MySqlCommand mySqlCommand = mySqlConnection.CreateCommand();
+            mySqlCommand.CommandText = "DELETE FROM schedule WHERE id=" + id + ";";
+            mySqlCommand.ExecuteNonQuery();
         }
 
         internal void DeleteRoom(long id)
