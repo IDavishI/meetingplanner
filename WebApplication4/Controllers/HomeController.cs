@@ -73,6 +73,22 @@ namespace Schedule.Controllers
         }
 
         [HttpPost]
+        [Route("/getcourses")]
+        public string GetCourses([Microsoft.AspNetCore.Mvc.FromBody] Organization organization)
+        {
+            try
+            {
+                List<Course> courses = dataBase.getCourcesByOrganizationId(organization.id);
+                return JsonConvert.SerializeObject(courses);
+            }
+            catch (Exception e)
+            {
+                return e.Message;
+            }
+        }
+
+
+        [HttpPost]
         [Route("/addcourse")]
         public string AddCourse([Microsoft.AspNetCore.Mvc.FromBody] Course course)
         {
@@ -145,7 +161,7 @@ namespace Schedule.Controllers
             }
             catch (Exception e)
             {
-                return "false";
+                return e.Message;
             }
         }
 
@@ -258,7 +274,7 @@ namespace Schedule.Controllers
 
 
         [HttpPost]
-        [Route("/updateinstuctor")]
+        [Route("/updateinstructor")]
         public string UpdateInstructor([Microsoft.AspNetCore.Mvc.FromBody] Instructor instructor)
         {
             try
@@ -303,7 +319,23 @@ namespace Schedule.Controllers
             }
         }
 
-        
+
+        [HttpPost]
+        [Route("/getschedule")]
+        public string GetSchedule([Microsoft.AspNetCore.Mvc.FromBody] Course course)
+        {
+            try
+            {
+                List<WebApplication4.Models.Schedule> schedules = dataBase.getSchedulesCourseId(course.id);
+                return JsonConvert.SerializeObject(schedules);
+            }
+            catch (Exception e)
+            {
+                return "false";
+            }
+        }
+
+
 
         [HttpPost]
         [Route("/createschedule")]

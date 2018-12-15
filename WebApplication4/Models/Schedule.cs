@@ -8,7 +8,7 @@ namespace WebApplication4.Models
     public class Schedule
     {
         public long id { get; set; }
-        public TimeSpan time { get; set; }
+        public string time { get; set; }
         public Boolean notify { get; set; }
         public long roomId { get; set; }
         public Room room { get; set; }
@@ -18,5 +18,11 @@ namespace WebApplication4.Models
         public Group group { get; set; }
         public long instructorId { get; set; }
         public Instructor Instructor { get; set; }
+
+        public Schedule(long id, string time)
+        {
+            this.id = id;
+            this.time = time;
+        }
     }
 }

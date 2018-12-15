@@ -13,7 +13,10 @@ namespace WebApplication4.Models.DBentities
 
         public long UserRegistration(User user)
         {
-            mySqlConnection.Open();
+            if (mySqlConnection.State == 0)
+            {
+                mySqlConnection.Open();
+            }
             MySqlCommand mySqlCommand = mySqlConnection.CreateCommand();
             mySqlCommand.CommandText = "INSERT INTO person(login, password, email, role) VALUES('" + user.login + "','" + user.password + "','" + user.email + "','" + user.role + "');";
             mySqlCommand.ExecuteNonQuery();
@@ -22,8 +25,10 @@ namespace WebApplication4.Models.DBentities
 
         public User getUserByLoginAndPassword(string login, string password)
         {
-            mySqlConnection.Open();
-
+            if (mySqlConnection.State == 0)
+            {
+                mySqlConnection.Open();
+            }
             MySqlCommand mySqlCommand = mySqlConnection.CreateCommand();
             mySqlCommand.CommandText = "SELECT id, login, password, email, role FROM person WHERE login = '" + login + "' AND password = '" + password + "';";
             MySqlDataReader reader = mySqlCommand.ExecuteReader();
@@ -35,6 +40,9 @@ namespace WebApplication4.Models.DBentities
 
         public List<Course> getCourcesByOrganizationId(long id)
         {
+            if(mySqlConnection.State == 0){
+                mySqlConnection.Open();
+            }
             MySqlCommand mySqlCommand = mySqlConnection.CreateCommand();
             mySqlCommand.CommandText = "SELECT id, name, description FROM course WHERE organizationId = " + id + ";";
             MySqlDataReader reader = mySqlCommand.ExecuteReader();
@@ -49,6 +57,10 @@ namespace WebApplication4.Models.DBentities
 
         public void OrganizationRegistration(Organization organization)
         {
+            if (mySqlConnection.State == 0)
+            {
+                mySqlConnection.Open();
+            }
             MySqlCommand mySqlCommand = mySqlConnection.CreateCommand();
             mySqlCommand.CommandText = "INSERT INTO organization(name, description, specialization, personId) VALUES('" + organization.name + "','" + organization.description + "','" + organization.specialization + "','" + organization.head.id + "');";
             mySqlCommand.ExecuteNonQuery();
@@ -56,7 +68,10 @@ namespace WebApplication4.Models.DBentities
 
         public long AddCource(Course course)
         {
-            mySqlConnection.Open();
+            if (mySqlConnection.State == 0)
+            {
+                mySqlConnection.Open();
+            }
             MySqlCommand mySqlCommand = mySqlConnection.CreateCommand();
             mySqlCommand.CommandText = "INSERT INTO course(name,description,organizationId) VALUES('" + course.name + "','" + course.description + "','" + course.organizationId + "');";
             mySqlCommand.ExecuteNonQuery();
@@ -65,7 +80,10 @@ namespace WebApplication4.Models.DBentities
 
         internal void UpdateCourse(Course course)
         {
-            mySqlConnection.Open();
+            if (mySqlConnection.State == 0)
+            {
+                mySqlConnection.Open();
+            }
             MySqlCommand mySqlCommand = mySqlConnection.CreateCommand();
             mySqlCommand.CommandText = "UPDATE course SET name = '" + course.name + "', description = '" + course.description + "' WHERE id=" + course.id + ";";
             mySqlCommand.ExecuteNonQuery();
@@ -73,7 +91,10 @@ namespace WebApplication4.Models.DBentities
 
         public void DeleteCourse(long courseId)
         {
-            mySqlConnection.Open();
+            if (mySqlConnection.State == 0)
+            {
+                mySqlConnection.Open();
+            }
             MySqlCommand mySqlCommand = mySqlConnection.CreateCommand();
             mySqlCommand.CommandText = "DELETE FROM course WHERE id=" + courseId + ";";
             mySqlCommand.ExecuteNonQuery();
@@ -81,8 +102,12 @@ namespace WebApplication4.Models.DBentities
 
         internal List<Group> getGroupsByCourseId(long id)
         {
+            if (mySqlConnection.State == 0)
+            {
+                mySqlConnection.Open();
+            }
             MySqlCommand mySqlCommand = mySqlConnection.CreateCommand();
-            mySqlCommand.CommandText = "SELECT id, name FROM groups WHERE courseId = " + id + ";";
+            mySqlCommand.CommandText = "SELECT id, name FROM `group` WHERE courseId = " + id + ";";
             MySqlDataReader reader = mySqlCommand.ExecuteReader();
             List<Group> groups = new List<Group>();
             while (reader.Read())
@@ -95,26 +120,35 @@ namespace WebApplication4.Models.DBentities
 
         internal long CreateGroup(Group group)
         {
-            mySqlConnection.Open();
+            if (mySqlConnection.State == 0)
+            {
+                mySqlConnection.Open();
+            }
             MySqlCommand mySqlCommand = mySqlConnection.CreateCommand();
-            mySqlCommand.CommandText = "INSERT INTO group(name,courseId) VALUES('" + group.name + "',"+ group.courseId +");";
+            mySqlCommand.CommandText = "INSERT INTO `group`(name,courseId) VALUES('" + group.name + "'," + group.courseId + ");";
             mySqlCommand.ExecuteNonQuery();
             return mySqlCommand.LastInsertedId;
         }
 
         internal void UpdateGroup(Group group)
         {
-            mySqlConnection.Open();
+            if (mySqlConnection.State == 0)
+            {
+                mySqlConnection.Open();
+            }
             MySqlCommand mySqlCommand = mySqlConnection.CreateCommand();
-            mySqlCommand.CommandText = "UPDATE group SET name = '" + group.name + "' WHERE id=" + group.id + ";";
+            mySqlCommand.CommandText = "UPDATE `group` SET name = '" + group.name + "' WHERE id=" + group.id + ";";
             mySqlCommand.ExecuteNonQuery();
         }
 
         internal void DeleteGroup(long id)
         {
-            mySqlConnection.Open();
+            if (mySqlConnection.State == 0)
+            {
+                mySqlConnection.Open();
+            }
             MySqlCommand mySqlCommand = mySqlConnection.CreateCommand();
-            mySqlCommand.CommandText = "DELETE FROM group WHERE id=" + id + ";";
+            mySqlCommand.CommandText = "DELETE FROM `group` WHERE id=" + id + ";";
             mySqlCommand.ExecuteNonQuery();
             mySqlCommand.CommandText = "DELETE FROM usergroup WHERE groupId=" + id + ";";
             mySqlCommand.ExecuteNonQuery();
@@ -122,8 +156,12 @@ namespace WebApplication4.Models.DBentities
 
         internal List<Room> getRoomsByCourseId(long id)
         {
+            if (mySqlConnection.State == 0)
+            {
+                mySqlConnection.Open();
+            }
             MySqlCommand mySqlCommand = mySqlConnection.CreateCommand();
-            mySqlCommand.CommandText = "SELECT id, number, floor FROM rooms WHERE courseId = " + id + ";";
+            mySqlCommand.CommandText = "SELECT id, number, floor FROM room WHERE courseId = " + id + ";";
             MySqlDataReader reader = mySqlCommand.ExecuteReader();
             List<Room> rooms = new List<Room>();
             while (reader.Read())
@@ -136,7 +174,10 @@ namespace WebApplication4.Models.DBentities
 
         internal long AddRoom(Room room)
         {
-            mySqlConnection.Open();
+            if (mySqlConnection.State == 0)
+            {
+                mySqlConnection.Open();
+            }
             MySqlCommand mySqlCommand = mySqlConnection.CreateCommand();
             mySqlCommand.CommandText = "INSERT INTO room(number,floor,courseId) VALUES('" + room.number + "'," + room.floor + "," + room.courseId +");";
             mySqlCommand.ExecuteNonQuery();
@@ -145,8 +186,12 @@ namespace WebApplication4.Models.DBentities
 
         internal List<Instructor> getInstructorsCourseId(long id)
         {
+            if (mySqlConnection.State == 0)
+            {
+                mySqlConnection.Open();
+            }
             MySqlCommand mySqlCommand = mySqlConnection.CreateCommand();
-            mySqlCommand.CommandText = "SELECT id, firstName, secondName, specialization FROM person WHERE courseId =" + id + ";";
+            mySqlCommand.CommandText = "SELECT id, firstName, secondName, specialization FROM instructor WHERE courseId =" + id + ";";
             MySqlDataReader reader = mySqlCommand.ExecuteReader();
             List<Instructor> instructors = new List<Instructor>();
             while (reader.Read())
@@ -159,7 +204,10 @@ namespace WebApplication4.Models.DBentities
 
         internal long AddInstructor(Instructor instructor)
         {
-            mySqlConnection.Open();
+            if (mySqlConnection.State == 0)
+            {
+                mySqlConnection.Open();
+            }
             MySqlCommand mySqlCommand = mySqlConnection.CreateCommand();
             mySqlCommand.CommandText = "INSERT INTO instructor(firstName,secondName,specialization, courseId) VALUES('" + instructor.firstName + "','" + instructor.secondName + "','" + instructor.specialization + "'," + instructor.courseId + ");";
             mySqlCommand.ExecuteNonQuery();
@@ -168,15 +216,39 @@ namespace WebApplication4.Models.DBentities
 
         internal void UpdateInstructor(Instructor instructor)
         {
-            mySqlConnection.Open();
+            if (mySqlConnection.State == 0)
+            {
+                mySqlConnection.Open();
+            }
             MySqlCommand mySqlCommand = mySqlConnection.CreateCommand();
             mySqlCommand.CommandText = "UPDATE instructor SET firstName = '" + instructor.firstName + "', secondName = '" + instructor.secondName + "', specialization = '" + instructor.specialization + "' WHERE id=" + instructor.id + ";";
             mySqlCommand.ExecuteNonQuery();
         }
 
+        internal List<Schedule> getSchedulesCourseId(long id)
+        {
+            if (mySqlConnection.State == 0)
+            {
+                mySqlConnection.Open();
+            }
+            MySqlCommand mySqlCommand = mySqlConnection.CreateCommand();
+            mySqlCommand.CommandText = "SELECT id, time FROM schedule WHERE courceId =" + id + ";";
+            MySqlDataReader reader = mySqlCommand.ExecuteReader();
+            List<Schedule> schedules = new List<Schedule>();
+            while (reader.Read())
+            {
+                schedules.Add(new Schedule(Int32.Parse(reader["id"].ToString()), reader["time"].ToString()));
+            }
+            reader.Close();
+            return schedules;
+        }
+
         internal void DeleteInstructor(long id)
         {
-            mySqlConnection.Open();
+            if (mySqlConnection.State == 0)
+            {
+                mySqlConnection.Open();
+            }
             MySqlCommand mySqlCommand = mySqlConnection.CreateCommand();
             mySqlCommand.CommandText = "DELETE FROM instructor WHERE id=" + id + ";";
             mySqlCommand.ExecuteNonQuery();
@@ -184,6 +256,10 @@ namespace WebApplication4.Models.DBentities
 
         internal List<User> searchPersons(string pattern)
         {
+            if (mySqlConnection.State == 0)
+            {
+                mySqlConnection.Open();
+            }
             MySqlCommand mySqlCommand = mySqlConnection.CreateCommand();
             mySqlCommand.CommandText = "SELECT id, login FROM person WHERE login LIKE '%" + pattern + "%';";
             MySqlDataReader reader = mySqlCommand.ExecuteReader();
@@ -198,7 +274,10 @@ namespace WebApplication4.Models.DBentities
 
         internal void UpdateSchedule(Schedule schedule)
         {
-            mySqlConnection.Open();
+            if (mySqlConnection.State == 0)
+            {
+                mySqlConnection.Open();
+            }
             MySqlCommand mySqlCommand = mySqlConnection.CreateCommand();
             mySqlCommand.CommandText = "UPDATE schedule SET time = '" + schedule.time + "', courceId = " + schedule.courseId + ", roomId = " + schedule.roomId + ", instructorId = " + schedule.instructorId + ", groupId = " + schedule.groupId + " WHERE id=" + schedule.id + ";";
             mySqlCommand.ExecuteNonQuery();
@@ -206,7 +285,10 @@ namespace WebApplication4.Models.DBentities
 
         internal void DeleteSchedule(long id)
         {
-            mySqlConnection.Open();
+            if (mySqlConnection.State == 0)
+            {
+                mySqlConnection.Open();
+            }
             MySqlCommand mySqlCommand = mySqlConnection.CreateCommand();
             mySqlCommand.CommandText = "DELETE FROM schedule WHERE id=" + id + ";";
             mySqlCommand.ExecuteNonQuery();
@@ -214,7 +296,10 @@ namespace WebApplication4.Models.DBentities
 
         internal void DeleteRoom(long id)
         {
-            mySqlConnection.Open();
+            if (mySqlConnection.State == 0)
+            {
+                mySqlConnection.Open();
+            }
             MySqlCommand mySqlCommand = mySqlConnection.CreateCommand();
             mySqlCommand.CommandText = "DELETE FROM room WHERE id=" + id + ";";
             mySqlCommand.ExecuteNonQuery();
@@ -222,7 +307,10 @@ namespace WebApplication4.Models.DBentities
 
         public long CreateSchedule(Schedule schedule)
         {
-            mySqlConnection.Open();
+            if (mySqlConnection.State == 0)
+            {
+                mySqlConnection.Open();
+            }
             MySqlCommand mySqlCommand = mySqlConnection.CreateCommand();
             mySqlCommand.CommandText = "INSERT INTO schedule(time,roomId,courceId,groupId,instructorId) VALUES('" + schedule.time + "'," + schedule.roomId + "," + schedule.courseId +"," + schedule.groupId +"," + schedule.instructorId + ");";
             mySqlCommand.ExecuteNonQuery();
@@ -231,6 +319,10 @@ namespace WebApplication4.Models.DBentities
 
         public Organization getOrganizationByHead(long headId)
         {
+            if (mySqlConnection.State == 0)
+            {
+                mySqlConnection.Open();
+            }
             MySqlCommand mySqlCommand = mySqlConnection.CreateCommand();
             mySqlCommand.CommandText = "SELECT id,name, description, specialization FROM organization WHERE personId = " + headId + ";";
             MySqlDataReader reader = mySqlCommand.ExecuteReader();
