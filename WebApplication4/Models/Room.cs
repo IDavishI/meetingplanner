@@ -19,5 +19,9 @@ namespace WebApplication4.Models
             this.number = number;
             this.floor = floor;
         }
+
+        public Room()
+        {
+        }
     }
 }

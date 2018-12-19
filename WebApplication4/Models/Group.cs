@@ -17,5 +17,9 @@ namespace WebApplication4.Models
             this.id = id;
             this.name = name;
         }
+
+        public Group()
+        {
+        }
     }
 }

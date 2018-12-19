@@ -66,6 +66,24 @@ namespace WebApplication4.Models.DBentities
             mySqlCommand.ExecuteNonQuery();
         }
 
+        internal List<Course> searchCourses(string pattern)
+        {
+            if (mySqlConnection.State == 0)
+            {
+                mySqlConnection.Open();
+            }
+            MySqlCommand mySqlCommand = mySqlConnection.CreateCommand();
+            mySqlCommand.CommandText = "SELECT id, name, description FROM course WHERE name LIKE '%" + pattern + "%' OR description LIKE '%" + pattern + "%';";
+            MySqlDataReader reader = mySqlCommand.ExecuteReader();
+            List<Course> courses = new List<Course>();
+            while (reader.Read())
+            {
+                courses.Add(new Course(Int32.Parse(reader["id"].ToString()), reader["name"].ToString(), reader["description"].ToString()));
+            }
+            reader.Close();
+            return courses;
+        }
+
         public long AddCource(Course course)
         {
             if (mySqlConnection.State == 0)
@@ -232,15 +250,70 @@ namespace WebApplication4.Models.DBentities
                 mySqlConnection.Open();
             }
             MySqlCommand mySqlCommand = mySqlConnection.CreateCommand();
-            mySqlCommand.CommandText = "SELECT id, time FROM schedule WHERE courceId =" + id + ";";
+            mySqlCommand.CommandText = "SELECT id, time, groupId, instructorId FROM schedule WHERE courceId =" + id + ";";
             MySqlDataReader reader = mySqlCommand.ExecuteReader();
             List<Schedule> schedules = new List<Schedule>();
             while (reader.Read())
             {
-                schedules.Add(new Schedule(Int32.Parse(reader["id"].ToString()), reader["time"].ToString()));
+                Schedule schedule = new Schedule(Int32.Parse(reader["id"].ToString()), reader["time"].ToString(), Int32.Parse(reader["groupId"].ToString()), Int32.Parse(reader["instructorId"].ToString()));
+                schedules.Add(schedule);
             }
             reader.Close();
             return schedules;
+        }
+
+        public Group getGroupById(long id)
+        {
+            if (mySqlConnection.State == 0)
+            {
+                mySqlConnection.Open();
+            }
+            MySqlCommand mySqlCommand = mySqlConnection.CreateCommand();
+            mySqlCommand.CommandText = "SELECT id, name FROM `group` WHERE id = " + id + ";";
+            MySqlDataReader reader = mySqlCommand.ExecuteReader();
+            Group group = new Group();
+            while (reader.Read())
+            { 
+                group = new Group(Int32.Parse(reader["id"].ToString()), reader["name"].ToString());
+            }
+            reader.Close();
+            return group;
+        }
+
+        public Room getRoomById(long id)
+        {
+            if (mySqlConnection.State == 0)
+            {
+                mySqlConnection.Open();
+            }
+            MySqlCommand mySqlCommand = mySqlConnection.CreateCommand();
+            mySqlCommand.CommandText = "SELECT id, number, floor FROM room WHERE id = " + id + ";";
+            MySqlDataReader reader = mySqlCommand.ExecuteReader();
+            Room room = new Room();
+            while (reader.Read())
+            {
+                room = new Room(Int32.Parse(reader["id"].ToString()), reader["number"].ToString(), Int32.Parse(reader["floor"].ToString()));
+            }
+            reader.Close();
+            return room;
+        }
+
+        public Instructor getInstructorById(long id)
+        {
+            if (mySqlConnection.State == 0)
+            {
+                mySqlConnection.Open();
+            }
+            MySqlCommand mySqlCommand = mySqlConnection.CreateCommand();
+            mySqlCommand.CommandText = "SELECT id, firstName, secondName, specialization FROM instructor WHERE id = " + id + ";";
+            MySqlDataReader reader = mySqlCommand.ExecuteReader();
+            Instructor instructor = new Instructor();
+            while (reader.Read())
+            {
+               instructor = new Instructor(Int32.Parse(reader["id"].ToString()), reader["firstName"].ToString(), reader["secondName"].ToString(), reader["specialization"].ToString());
+            }
+            reader.Close();
+            return instructor;
         }
 
         internal void DeleteInstructor(long id)

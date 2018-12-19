@@ -21,5 +21,9 @@ namespace WebApplication4.Models
             this.secondName = secondName;
             this.specialization = specialization;
         }
+
+        public Instructor()
+        {
+        }
     }
 }

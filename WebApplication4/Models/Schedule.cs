@@ -19,10 +19,12 @@ namespace WebApplication4.Models
         public long instructorId { get; set; }
         public Instructor Instructor { get; set; }
 
-        public Schedule(long id, string time)
+        public Schedule(long id, string time, long groupId, long instructorId)
         {
             this.id = id;
             this.time = time;
+            this.groupId = groupId;
+            this.instructorId = instructorId;
         }
     }
 }

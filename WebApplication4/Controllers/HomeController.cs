@@ -6,6 +6,8 @@ using Newtonsoft.Json;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Cors;
 using System.Collections.Generic;
+using WebApiContrib.Formatting;
+using Newtonsoft.Json.Linq;
 
 namespace Schedule.Controllers
 {
@@ -16,24 +18,29 @@ namespace Schedule.Controllers
     {
         DataBase dataBase = new DataBase();
 
+        JsonSerializerSettings settings = new JsonSerializerSettings
+        {
+            DateParseHandling = DateParseHandling.None,
+        };
+
         [HttpPost]
         [Route("/reg")]
-        public string Registration([FromBody] User user)
+        public IActionResult Registration([FromBody] User user)
         {
             try
             {
                 dataBase.UserRegistration(user);
-                return "true";
+                return Content("true");
             }
             catch (Exception e)
             {
-                return "false";
+                return Content("false");
             }
         }
 
         [HttpPost]
         [Route("/auth")]
-        public string Authorization([Microsoft.AspNetCore.Mvc.FromBody] User user)
+        public IActionResult Authorization([FromBody] User user)
         {
             try
             {
@@ -44,19 +51,19 @@ namespace Schedule.Controllers
                     organization.head = user;
                     List<Course> courses = dataBase.getCourcesByOrganizationId(organization.id);
                     organization.courses = courses;
-                    return JsonConvert.SerializeObject(organization);
+                    return Content(JsonConvert.SerializeObject(organization));
                 }
-                return JsonConvert.SerializeObject(user);
+                return Content(JsonConvert.SerializeObject(user));
             }
             catch (Exception e)
             {
-                return "false";
+                return Content("false");
             }
         }
 
         [HttpPost]
         [Route("/organizationreg")]
-        public string Organizationreg([Microsoft.AspNetCore.Mvc.FromBody] Organization organization)
+        public IActionResult Organizationreg([FromBody] Organization organization)
         {
             try
             {
@@ -64,274 +71,295 @@ namespace Schedule.Controllers
                 long userId = dataBase.UserRegistration(user);
                 organization.head.id = userId;
                 dataBase.OrganizationRegistration(organization);
-                return "true";
+                return Content("true");
             }
             catch (Exception e)
             {
-                return "false";
+                return Content("false");
+            }
+        }
+
+        [HttpPost]
+        [Route("/searchcourses")]
+        public IActionResult SearchCourses([FromBody]JObject pattern)
+        {
+            try
+            {
+                string str = pattern.Value<string>("pattern");
+                List<Course> courses = dataBase.searchCourses(str);
+                return Content(JsonConvert.SerializeObject(courses));
+            }
+            catch (Exception e)
+            {
+                return Content(e.Message);
             }
         }
 
         [HttpPost]
         [Route("/getcourses")]
-        public string GetCourses([Microsoft.AspNetCore.Mvc.FromBody] Organization organization)
+        public IActionResult GetCourses([FromBody] Organization organization)
         {
             try
             {
                 List<Course> courses = dataBase.getCourcesByOrganizationId(organization.id);
-                return JsonConvert.SerializeObject(courses);
+                return Content(JsonConvert.SerializeObject(courses));
             }
             catch (Exception e)
             {
-                return e.Message;
+                return Content("false");
             }
         }
 
 
         [HttpPost]
         [Route("/addcourse")]
-        public string AddCourse([Microsoft.AspNetCore.Mvc.FromBody] Course course)
+        public IActionResult AddCourse([FromBody] Course course)
         {
             try
             {
                 long id  = dataBase.AddCource(course);
                 course.id = id;
-                return JsonConvert.SerializeObject(course);
+                return Content(JsonConvert.SerializeObject(course));
             }
             catch (Exception e)
             {
-                return "false";
+                return Content("false");
             }
         }
 
         [HttpPost]
         [Route("/updatecourse")]
-        public string UpdateCourse([Microsoft.AspNetCore.Mvc.FromBody] Course course)
+        public IActionResult UpdateCourse([FromBody] Course course)
         {
             try
             {
                 dataBase.UpdateCourse(course);
-                return "true";
+                return Content("true");
             }
             catch (Exception e)
             {
-                return "false";
+                return Content("false");
             }
         }
 
         [HttpPost]
         [Route("/deletecourse")]
-        public string DeleteCourse([Microsoft.AspNetCore.Mvc.FromBody] Course course)
+        public IActionResult DeleteCourse([FromBody] Course course)
         {
             try
             {
                 dataBase.DeleteCourse(course.id);
-                return "true";
+                return Content("true");
             }
             catch (Exception e)
             {
-                return "false";
+                return Content("false");
+            }
+        }
+
+        [HttpPost]
+        [Route("/searchperson")]
+        public IActionResult SearchPersons([FromBody]JObject pattern)
+        {
+            try
+            {
+                string str = pattern.Value<string>("pattern");
+                List<User> users = dataBase.searchPersons(str);
+                return Content(JsonConvert.SerializeObject(users));
+            }
+            catch (Exception e)
+            {
+                return Content("false");
             }
         }
 
         [HttpPost]
         [Route("/getgroups")]
-        public string GetGroups([Microsoft.AspNetCore.Mvc.FromBody] Course course)
+        public IActionResult GetGroups([FromBody] Course course)
         {
             try
             {
                 List<Group> groups = dataBase.getGroupsByCourseId(course.id);
-                return JsonConvert.SerializeObject(groups);
+                return Content(JsonConvert.SerializeObject(groups));
             }
             catch (Exception e)
             {
-                return "false";
+                return Content("false");
             }
         }
 
         [HttpPost]
         [Route("/creategroup")]
-        public string CreateGroup([Microsoft.AspNetCore.Mvc.FromBody] Group group)
+        public IActionResult CreateGroup([FromBody] Group group)
         {
             try
             {
                 long id = dataBase.CreateGroup(group);
                 group.id = id;
-                return JsonConvert.SerializeObject(group);
+                return Content(JsonConvert.SerializeObject(group));
             }
             catch (Exception e)
             {
-                return e.Message;
+                return Content("false");
             }
         }
 
         [HttpPost]
         [Route("/updategroup")]
-        public string UpdateGroup([Microsoft.AspNetCore.Mvc.FromBody] Group group)
+        public IActionResult UpdateGroup([FromBody] Group group)
         {
             try
             {
                 dataBase.UpdateGroup(group);
-                return "true";
+                return Content("true");
             }
             catch (Exception e)
             {
-                return "false";
+                return Content("false");
             }
         }
 
         [HttpPost]
         [Route("/deletegroup")]
-        public string DeleteGroup([Microsoft.AspNetCore.Mvc.FromBody] Group group)
+        public IActionResult DeleteGroup([FromBody] Group group)
         {
             try
             {
                 dataBase.DeleteGroup(group.id);
-                return "true";
+                return Content("true");
             }
             catch (Exception e)
             {
-                return "false";
+                return Content("false");
             }
         }
 
         [HttpPost]
         [Route("/getrooms")]
-        public string GetRooms([Microsoft.AspNetCore.Mvc.FromBody] Course course)
+        public IActionResult GetRooms([FromBody] Course course)
         {
             try
             {
                 List<Room> rooms = dataBase.getRoomsByCourseId(course.id);
-                return JsonConvert.SerializeObject(rooms);
+                return Content(JsonConvert.SerializeObject(rooms));
             }
             catch (Exception e)
             {
-                return "false";
+                return Content("false");
             }
         }
 
         [HttpPost]
         [Route("/addroom")]
-        public string AddRoom([Microsoft.AspNetCore.Mvc.FromBody] Room room)
+        public IActionResult AddRoom([FromBody] Room room)
         {
             try
             {
                 long id = dataBase.AddRoom(room);
                 room.id = id;
-                return JsonConvert.SerializeObject(room);
+                return Content(JsonConvert.SerializeObject(room));
             }
             catch (Exception e)
             {
-                return "false";
+                return Content("false");
             }
         }
 
         [HttpPost]
         [Route("/deleteroom")]
-        public string DeleteRoom([Microsoft.AspNetCore.Mvc.FromBody] Room room)
+        public IActionResult DeleteRoom([FromBody] Room room)
         {
             try
             {
                 dataBase.DeleteRoom(room.id);
-                return "true";
+                return Content("true");
             }
             catch (Exception e)
             {
-                return "false";
+                return Content("false");
             }
         }
 
         [HttpPost]
         [Route("/getinstructors")]
-        public string GetInstructors([Microsoft.AspNetCore.Mvc.FromBody] Course course)
+        public IActionResult GetInstructors([FromBody] Course course)
         {
             try
             {
                 List<Instructor> instructors = dataBase.getInstructorsCourseId(course.id);
-                return JsonConvert.SerializeObject(instructors);
+                return Content(JsonConvert.SerializeObject(instructors));
             }
             catch (Exception e)
             {
-                return "false";
+                return Content("false");
             }
         }
 
         [HttpPost]
         [Route("/addinstructors")]
-        public string AddInstructors([Microsoft.AspNetCore.Mvc.FromBody] Instructor instructor)
+        public IActionResult AddInstructors([FromBody] Instructor instructor)
         {
             try
             {
                 long id = dataBase.AddInstructor(instructor);
                 instructor.id = id;
-                return JsonConvert.SerializeObject(instructor);
+                return Content(JsonConvert.SerializeObject(instructor));
             }
             catch (Exception e)
             {
-                return "false";
+                return Content("false");
             }
         }
 
 
         [HttpPost]
         [Route("/updateinstructor")]
-        public string UpdateInstructor([Microsoft.AspNetCore.Mvc.FromBody] Instructor instructor)
+        public IActionResult UpdateInstructor([FromBody] Instructor instructor)
         {
             try
             {
                 dataBase.UpdateInstructor(instructor);
-                return "true";
+                return Content("true");
             }
             catch (Exception e)
             {
-                return "false";
+                return Content("false");
             }
         }
 
         [HttpPost]
         [Route("/deleteinstructor")]
-        public string DeleteInstructor([Microsoft.AspNetCore.Mvc.FromBody] Instructor instructor)
+        public IActionResult DeleteInstructor([FromBody] Instructor instructor)
         {
             try
             {
                 dataBase.DeleteInstructor(instructor.id);
-                return "true";
+                return Content("true");
             }
             catch (Exception e)
             {
-                return "false";
-            }
-        }
-
-
-        [HttpPost]
-        [Route("/searchperson")]
-        public string SearchPersons([Microsoft.AspNetCore.Mvc.FromBody] string pattern)
-        {
-            try
-            {
-                List<User> users = dataBase.searchPersons(pattern);
-                return JsonConvert.SerializeObject(users);
-            }
-            catch (Exception e)
-            {
-                return "false";
+                return Content("false");
             }
         }
 
 
         [HttpPost]
         [Route("/getschedule")]
-        public string GetSchedule([Microsoft.AspNetCore.Mvc.FromBody] Course course)
+        public IActionResult GetSchedule([FromBody] Course course)
         {
             try
             {
                 List<WebApplication4.Models.Schedule> schedules = dataBase.getSchedulesCourseId(course.id);
-                return JsonConvert.SerializeObject(schedules);
+                foreach(WebApplication4.Models.Schedule schedule in schedules){
+                    schedule.group = dataBase.getGroupById(schedule.groupId);
+                    schedule.room = dataBase.getRoomById(schedule.roomId);
+                    schedule.Instructor = dataBase.getInstructorById(schedule.instructorId);
+                }
+                return Content(JsonConvert.SerializeObject(schedules));
             }
             catch (Exception e)
             {
-                return "false";
+                return Content("false");
             }
         }
 
@@ -339,49 +367,51 @@ namespace Schedule.Controllers
 
         [HttpPost]
         [Route("/createschedule")]
-        public string CreateSchedule([Microsoft.AspNetCore.Mvc.FromBody] WebApplication4.Models.Schedule schedule)
+        public IActionResult CreateSchedule([FromBody] WebApplication4.Models.Schedule schedule)
         {
             try
             {
                 long id = dataBase.CreateSchedule(schedule);
                 schedule.id = id;
-                return JsonConvert.SerializeObject(schedule);
+                return Content(JsonConvert.SerializeObject(schedule));
             }
             catch (Exception e)
             {
-                return "false";
+                return Content("false");
             }
         }
 
         [HttpPost]
         [Route("/updateschedule")]
-        public string UpdateSchedule([Microsoft.AspNetCore.Mvc.FromBody] WebApplication4.Models.Schedule schedule)
+        public IActionResult UpdateSchedule([FromBody] WebApplication4.Models.Schedule schedule)
         {
             try
             {
                 dataBase.UpdateSchedule(schedule);
-                return "true";
+                return Content("true");
             }
             catch (Exception e)
             {
-                return "false";
+                return Content("false");
             }
         }
 
         [HttpPost]
         [Route("/deleteschedule")]
-        public string DeleteSchedule([Microsoft.AspNetCore.Mvc.FromBody] WebApplication4.Models.Schedule schedule)
+        public IActionResult DeleteSchedule([FromBody] WebApplication4.Models.Schedule schedule)
         {
             try
             {
                 dataBase.DeleteSchedule(schedule.id);
-                return "true";
+                return Content("true");
             }
             catch (Exception e)
             {
-                return "false";
+                return Content("false");
             }
         }
+
+
 
     }
 }
