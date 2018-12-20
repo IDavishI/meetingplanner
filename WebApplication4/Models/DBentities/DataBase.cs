@@ -55,6 +55,72 @@ namespace WebApplication4.Models.DBentities
             return courses;
         }
 
+        internal Course getCourseByGroupId(long id)
+        {
+            if (mySqlConnection.State == 0)
+            {
+                mySqlConnection.Open();
+            }
+            MySqlCommand mySqlCommand = mySqlConnection.CreateCommand();
+            mySqlCommand.CommandText = "SELECT id, name, description FROM course WHERE id = (SELECT courseId FROM `group` WHERE id = " + id + ");";
+            MySqlDataReader reader = mySqlCommand.ExecuteReader();
+            Course course = new Course();
+            while (reader.Read())
+            {
+                course = new Course(Int32.Parse(reader["id"].ToString()), reader["name"].ToString(), reader["description"].ToString());
+            }
+            reader.Close();
+            return course;
+        }
+
+        internal List<Schedule> getSchedulesGroupId(long id)
+        {
+            if (mySqlConnection.State == 0)
+            {
+                mySqlConnection.Open();
+            }
+            MySqlCommand mySqlCommand = mySqlConnection.CreateCommand();
+            mySqlCommand.CommandText = "SELECT id, time, groupId, instructorId, roomId FROM schedule WHERE groupId =" + id + ";";
+            MySqlDataReader reader = mySqlCommand.ExecuteReader();
+            List<Schedule> schedules = new List<Schedule>();
+            while (reader.Read())
+            {
+                Schedule schedule = new Schedule(Int32.Parse(reader["id"].ToString()), reader["time"].ToString(), Int32.Parse(reader["groupId"].ToString()), Int32.Parse(reader["instructorId"].ToString()), Int32.Parse(reader["instructorId"].ToString()));
+                schedules.Add(schedule);
+            }
+            reader.Close();
+            return schedules;
+        }
+
+        internal void signUptoGroup(long userId, long groupId)
+        {
+            if (mySqlConnection.State == 0)
+            {
+                mySqlConnection.Open();
+            }
+            MySqlCommand mySqlCommand = mySqlConnection.CreateCommand();
+            mySqlCommand.CommandText = "INSERT INTO usergroup(userId, groupId) VALUES(" + userId + "," + groupId  + ");";
+            mySqlCommand.ExecuteNonQuery();
+        }
+
+        internal List<Group> getGroupsByUserId(long id)
+        {
+            if (mySqlConnection.State == 0)
+            {
+                mySqlConnection.Open();
+            }
+            MySqlCommand mySqlCommand = mySqlConnection.CreateCommand();
+            mySqlCommand.CommandText = "SELECT id, name FROM `group` WHERE id = (SELECT groupId FROM usergroup WHERE userId = " + id + ");";
+            MySqlDataReader reader = mySqlCommand.ExecuteReader();
+            List<Group> groups = new List<Group>();
+            while (reader.Read())
+            {
+                groups.Add(new Group(Int32.Parse(reader["id"].ToString()), reader["name"].ToString()));
+            }
+            reader.Close();
+            return groups;
+        }
+
         public void OrganizationRegistration(Organization organization)
         {
             if (mySqlConnection.State == 0)
@@ -250,12 +316,12 @@ namespace WebApplication4.Models.DBentities
                 mySqlConnection.Open();
             }
             MySqlCommand mySqlCommand = mySqlConnection.CreateCommand();
-            mySqlCommand.CommandText = "SELECT id, time, groupId, instructorId FROM schedule WHERE courceId =" + id + ";";
+            mySqlCommand.CommandText = "SELECT id, time, groupId, instructorId, roomId FROM schedule WHERE courceId =" + id + ";";
             MySqlDataReader reader = mySqlCommand.ExecuteReader();
             List<Schedule> schedules = new List<Schedule>();
             while (reader.Read())
             {
-                Schedule schedule = new Schedule(Int32.Parse(reader["id"].ToString()), reader["time"].ToString(), Int32.Parse(reader["groupId"].ToString()), Int32.Parse(reader["instructorId"].ToString()));
+                Schedule schedule = new Schedule(Int32.Parse(reader["id"].ToString()), reader["time"].ToString(), Int32.Parse(reader["groupId"].ToString()), Int32.Parse(reader["instructorId"].ToString()), Int32.Parse(reader["instructorId"].ToString()));
                 schedules.Add(schedule);
             }
             reader.Close();

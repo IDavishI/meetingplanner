@@ -53,7 +53,35 @@ namespace Schedule.Controllers
                     organization.courses = courses;
                     return Content(JsonConvert.SerializeObject(organization));
                 }
+                List<Group> groups = dataBase.getGroupsByUserId(user.id);
+                List<UserGroup> userGroups = new List<UserGroup>();
+                foreach (Group group in groups)
+                {
+                    group.course = dataBase.getCourseByGroupId(group.id);
+                    userGroups.Add(new UserGroup(group));
+                }
+                user.groups = userGroups;
                 return Content(JsonConvert.SerializeObject(user));
+            }
+            catch (Exception e)
+            {
+                return Content(e.Message);
+            }
+        }
+
+        [HttpPost]
+        [Route("/getgroupschedule")]
+        public IActionResult getScheduleByGroup([FromBody] Group group)
+        {
+            try
+            {
+                List<WebApplication4.Models.Schedule> schedules = dataBase.getSchedulesGroupId(group.id);
+                foreach (WebApplication4.Models.Schedule schedule in schedules)
+                {
+                    schedule.room = dataBase.getRoomById(schedule.roomId);
+                    schedule.Instructor = dataBase.getInstructorById(schedule.instructorId);
+                }
+                return Content(JsonConvert.SerializeObject(schedules));
             }
             catch (Exception e)
             {
@@ -78,6 +106,24 @@ namespace Schedule.Controllers
                 return Content("false");
             }
         }
+
+        [HttpPost]
+        [Route("/signupgroup")]
+        public IActionResult signUpToGroup([FromBody] JObject @object)
+        {
+            try
+            {
+                long userId = @object.Value<long>("userId");
+                long groupId = @object.Value<long>("groupId");
+                dataBase.signUptoGroup(userId, groupId);
+                return Content("true");
+            }
+            catch (Exception e)
+            {
+                return Content("false");
+            }
+        }
+
 
         [HttpPost]
         [Route("/searchcourses")]

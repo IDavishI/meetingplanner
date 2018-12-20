@@ -11,7 +11,6 @@ namespace WebApplication4.Models
         public string name { get; set; }
         public long courseId { get; set; }
         public Course course { get; set; }
-        public List<UserGroup> users { get; set; }
 
         public Group(long id, string name) {
             this.id = id;
