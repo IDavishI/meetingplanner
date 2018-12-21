@@ -70,6 +70,27 @@ namespace Schedule.Controllers
         }
 
         [HttpPost]
+        [Route("/getusersgroups")]
+        public IActionResult getScheduleByGroup([FromBody] JObject @object)
+        {
+            try
+            {
+                long id = @object.Value<long>("userId");
+                List<Group> groups = dataBase.getGroupsByUserId(id);
+                foreach (Group group in groups)
+                {
+                    group.course = dataBase.getCourseByGroupId(group.id);
+                }
+                return Content(JsonConvert.SerializeObject(groups));
+            }
+            catch (Exception e)
+            {
+                return Content("false");
+            }
+        }
+
+
+        [HttpPost]
         [Route("/getgroupschedule")]
         public IActionResult getScheduleByGroup([FromBody] Group group)
         {
